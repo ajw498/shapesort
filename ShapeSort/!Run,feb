@@ -1,0 +1,11 @@
+Set ShapeXD$Dir <Obey$Dir>
+IconSprites <Obey$Dir>.!Sprites
+RMEnsure UtilityModule 3.10 Error ShapeSort requires RISC OS 3.10 or later to run
+RMEnsure SharedCLibrary 3.75 RmLoad System:Modules.CLib
+RMEnsure SharedCLibrary 3.75 Error ShapeSort needs the CLib (Shared C Library) module version 3.75 or later
+RMEnsure DrawFile RMLoad System:Modules.DrawFile
+RMEnsure DrawFile Error DrawFile module not found
+RMEnsure WindowManager 3.17 RMEnsure BorderUtils 0.01 RMLoad System:Modules.BorderUtils
+RMEnsure WindowManager 3.17 RMEnsure BorderUtils 0.01 Error ShapeSort needs the BorderUtils module version 0.01 or later
+WimpSlot -Min 64k -Max 64k
+Run <Obey$Dir>.!RunImage

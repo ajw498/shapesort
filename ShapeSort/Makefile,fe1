@@ -1,13 +1,65 @@
-#Project
-Making ShapeSort
-#Target
-Alex:C.ShapeSort.!Shape 2D.!RunImage
-#Files
-Alex:C.ShapeSort.!Shape 2D.c.!RunImage
-Alex:C.ShapeSort.!Shape 2D.o.Questions
-Alex:C.ShapeSort.!Shape 2D.o.Error
-#Libraries
-CLib:o.stubs
-AJWLib:o.ajwlib
-AJWLib:o.drawfile
-Desklib:o.Desklib
+HEADERS	=	Questions.h
+
+LIBS	=	\
+		DeskLib:o.DeskLib\
+		AJWLib:o.AJWLib
+
+
+OBJECTS	=	!RunImage.o\
+		Questions.o\
+		Error.o
+
+
+
+CCFLAGS		=	$(CCEXTRA) -mthrowback -mstubs -IL: -IDeskLib:
+
+CC		=	gcc -c $(CCFLAGS)
+
+VERSION		=	2D
+
+.c.o:
+	$(CC) $< -o $@
+
+all:	../!Shape$(VERSION)/!RunImage ../!Shape$(VERSION)/Messages ../!Shape$(VERSION)/Templates ../!Shape$(VERSION)/!Sprites ../!Shape$(VERSION)/!Sprites22 ../!Shape$(VERSION)/!Boot ../!Shape$(VERSION)/!Run ../!Shape$(VERSION)/TreeData ../!Shape$(VERSION)/Pictures ../!Shape$(VERSION)/!Help
+
+!RunImage:	$(OBJECTS) $(LIBS)
+	gcc -o $@ -D$(VERSION) $(OBJECTS) $(LIBS)
+
+
+../!Shape$(VERSION):
+	mkdir $@
+
+../!Shape$(VERSION)/!RunImage:	../!Shape$(VERSION) !RunImage
+	cp !RunImage $@
+
+../!Shape$(VERSION)/Templates:	../!Shape$(VERSION) Templates
+	cp Templates $@
+
+../!Shape$(VERSION)/!Sprites:	../!Shape$(VERSION) !Sprites
+	cp !Sprites $@
+
+../!Shape$(VERSION)/!Sprites22:	../!Shape$(VERSION) !Sprites22
+	cp !Sprites22 $@
+
+../!Shape$(VERSION)/!Help:	../!Shape$(VERSION) !Help
+	cp !Help $@
+
+../!Shape$(VERSION)/Messages:	../!Shape$(VERSION) Messages
+	sed s/XD/$(VERSION)/ Messages > $@
+
+../!Shape$(VERSION)/!Boot:	../!Shape$(VERSION) !Boot
+	sed s/XD/$(VERSION)/ !Boot > $@
+	filetype $@ Obey
+
+../!Shape$(VERSION)/!Run:	../!Shape$(VERSION) !Run
+	sed s/XD/$(VERSION)/ !Run > $@
+	filetype $@ Obey
+
+../!Shape$(VERSION)/TreeData:	../!Shape$(VERSION) TreeData$(VERSION)
+	cp TreeData$(VERSION) $@
+
+../!Shape$(VERSION)/Pictures:	../!Shape$(VERSION) Pictures$(VERSION)
+	cp Pictures$(VERSION) $@
+	rm $@/CVS
+	touch $@
+

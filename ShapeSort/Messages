@@ -1,0 +1,16 @@
+Task.Name:ShapeSort XD
+Task.Purpose:Sorting XD Shapes
+Task.Icon:!ShapeXD
+Error.NoMem:Not enough free memory
+Error.TooMany:There cannot be more than 15 different shapes 
+Error.Fatal:Sorry, ShapeSort has suffered a internal error (%s) and must exit immediatly
+Report.Title:Message from ShapeSort
+Report.Ok:OK
+Choose.Title:Choose shape
+Wrong.Shape:You have made a mistake when answering one of the questions
+Menu.Title:ShapeSort XD
+Menu.IconBar:Info,Quit
+MainWin.Back:Go back to last question
+MainWin.GoAgain:Have another go?
+MainWin.Title:Shape Sorting
+
