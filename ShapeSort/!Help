@@ -6,6 +6,11 @@ ShapeSort is a program that tries to identify which shape you have
 choosen, by asking yes/no questions for you to answer, until it has
 deduced the shape.  It's operation should be fairly self-explanatary.
 
+If you wish to alter any of the pictures, then shift double click on
+!Shape 2D (or !Shape 3D) and then open the Pictures directory. All the
+pictures are in Draw format. To alter the text, shift double click on
+!Shape 2D (or !Shape 3D) and the edit the TreeData file.
+
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,7 +25,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-    
+
+
+Any comments, bug reports or suggestions for improvements are welcome.
+
 Alex Waugh mailto:ajw498@ecs.soton.ac.uk
 
 Any updates should be available from http://www.ecs.soton.ac.uk/~ajw498/
