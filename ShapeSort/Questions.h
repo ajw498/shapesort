@@ -14,9 +14,9 @@ char *GetQuestion(void);
 
 char *GetFilename(void);
 
-BOOL LeafNode(void);
+Desk_bool LeafNode(void);
 
-BOOL RootNode(void);
+Desk_bool RootNode(void);
 
 void MoveLeft(void);
 

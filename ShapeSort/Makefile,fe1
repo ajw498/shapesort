@@ -1,31 +1,32 @@
 HEADERS	=	Questions.h
 
 LIBS	=	\
-		DeskLib:o.DeskLib\
-		AJWLib:o.AJWLib
+		L:Stubs.o.asstubs\
+		L:Desk.o.Desk\
+		L:AJWLib.o.AJWLib
 
 
 OBJECTS	=	!RunImage.o\
-		Questions.o\
-		Error.o
+		Questions.o
 
 
 
-CCFLAGS		=	$(CCEXTRA) -mthrowback -mstubs -IL: -IDeskLib:
+CCFLAGS		=	$(CCEXTRA) -mthrowback -mstubs -Wall -O3 -IL:
 
 CC		=	gcc -c $(CCFLAGS)
 
 LINK		=	gcc $(CCFLAGS)
 
-VERSION		=	2D
+VERSION		=	3D
+
 
 .c.o:
-	$(CC) $< -o $@
+	$(CC) -DBUILD$(VERSION) $< -o $@
 
 all:	../!Shape$(VERSION)/!RunImage ../!Shape$(VERSION)/Messages ../!Shape$(VERSION)/Templates ../!Shape$(VERSION)/!Sprites ../!Shape$(VERSION)/!Sprites22 ../!Shape$(VERSION)/!Boot ../!Shape$(VERSION)/!Run ../!Shape$(VERSION)/TreeData ../!Shape$(VERSION)/Pictures ../!Shape$(VERSION)/!Help
 
 !RunImage:	$(OBJECTS) $(LIBS)
-	$(LINK) -o $@ -D$(VERSION) $(OBJECTS) $(LIBS)
+	$(LINK) -o $@ $(OBJECTS) $(LIBS)
 
 
 ../!Shape$(VERSION):
@@ -64,4 +65,12 @@ all:	../!Shape$(VERSION)/!RunImage ../!Shape$(VERSION)/Messages ../!Shape$(VERSI
 	cp Pictures$(VERSION) $@
 	rm $@/CVS
 	touch $@
+
+clean:
+	rm !RunImage
+	rm *.o
+
+sparkling:	clean
+	rm ../!Shape2D
+	rm ../!Shape3D
 

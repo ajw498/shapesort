@@ -5,7 +5,9 @@ Error.NoMem:Not enough free memory
 Error.TooMany:There cannot be more than 15 different shapes 
 Error.Fatal:Sorry, ShapeSort has suffered a internal error (%s) and must exit immediatly
 Report.Title:Message from ShapeSort
+Report.Init:You will need a box of solid shapes to go with this program
 Report.Ok:OK
+Report.Choose:Pick a shape from your box then click on the picture of your shape
 Choose.Title:Choose shape
 Wrong.Shape:You have made a mistake when answering one of the questions
 Menu.Title:ShapeSort XD

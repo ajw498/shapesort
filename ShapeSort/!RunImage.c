@@ -4,33 +4,33 @@
 	See !Help file for conditions of use
 */
 
-#include "DeskLib:Window.h"
-#include "DeskLib:Error.h"
-#include "DeskLib:Event.h"
-#include "DeskLib:EventMsg.h"
-#include "DeskLib:Msgs.h"
-#include "DeskLib:Handler.h"
-#include "DeskLib:Icon.h"
-#include "DeskLib:Menu.h"
-#include "DeskLib:Menu2.h"
-#include "DeskLib:Resource.h"
-#include "DeskLib:Screen.h"
-#include "DeskLib:Template.h"
-#include "DeskLib:File.h"
-#include "DeskLib:Filing.h"
-#include "DeskLib:Sprite.h"
-#include "DeskLib:GFX.h"
-#include "DeskLib:Str.h"
-#include "DeskLib:KeyCodes.h"
-#include "DeskLib:Dialog.h"
-#include "DeskLib:Pointer.h"
-#include "AJWLib:Window.h"
-#include "AJWLib:Menu.h"
-#include "AJWLib:Misc.h"
-#include "AJWLib:Msgs.h"
-#include "AJWLib:Handler.h"
-#include "AJWLib:DrawFile.h"
-#include "AJWLib:Flex.h"
+#include "Desk.Window.h"
+#include "Desk.Error.h"
+#include "Desk.Event.h"
+#include "Desk.EventMsg.h"
+#include "Desk.Msgs.h"
+#include "Desk.Handler.h"
+#include "Desk.Icon.h"
+#include "Desk.Menu.h"
+#include "Desk.DeskMem.h"
+#include "Desk.Menu2.h"
+#include "Desk.Resource.h"
+#include "Desk.Screen.h"
+#include "Desk.Template.h"
+#include "Desk.File.h"
+#include "Desk.Filing.h"
+#include "Desk.Sprite.h"
+#include "Desk.GFX.h"
+#include "Desk.Str.h"
+#include "Desk.Sound.h"
+#include "Desk.KeyCodes.h"
+#include "Desk.Pointer.h"
+
+#include "AJWLib.Window.h"
+#include "AJWLib.Error2.h"
+#include "AJWLib.Menu.h"
+#include "AJWLib.Msgs.h"
+#include "AJWLib.DrawFile.h"
 #include "Questions.h"
 
 #include <stdlib.h>
@@ -39,11 +39,27 @@
 #include <signal.h>
 #include "kernel.h"
 
-#define REPORT 0
 
-#define VERSION "1.00 (9-Jun-98)"
-#define RESOURCEDIR "Shape2D"
-#define PICTURESDIR "<Shape2D$Dir>.Pictures" /*Dont change without changing LENGTHOFPICTURESDIR*/
+#ifdef BUILD2D
+ #ifdef BUILD3D
+  #error You cannot specify two build versions at once
+ #else
+  #define TYPE "2D"
+  #define REPORT 0
+ #endif
+#else
+ #ifdef BUILD3D
+  #define TYPE "3D"
+  #define REPORT 1
+ #else
+  #error You must specify the build version
+ #endif
+#endif
+
+
+#define VERSION "1.01 (13-Feb-00)"
+#define RESOURCEDIR "Shape"TYPE
+#define PICTURESDIR "<Shape"TYPE"$Dir>.Pictures" /*Dont change without changing LENGTHOFPICTURESDIR*/
 #define LENGTHOFPICTURESDIR 22
 #define TREEDESCRIPTIONFILE "TreeData"
 #define MAX_DRAWFILES 15
@@ -88,13 +104,11 @@ typedef struct {
 } origin;
 
 
-window_handle info,mainwin,choosewin;
-dialog report;
-menu_ptr iconbarmenu;
+Desk_window_handle info,mainwin,choosewin,report;
+Desk_menu_ptr iconbarmenu;
 
-BOOL mainwinopen=FALSE;
-BOOL error=FALSE;
-BOOL restart=FALSE;
+Desk_bool mainwinopen=Desk_FALSE;
+Desk_bool restart=Desk_FALSE;
 char goback[256];
 char goagain[256];
 
@@ -104,41 +118,28 @@ int currentdrawfile=0;
 transformation_matrix matrix;
 origin origins[MAX_DRAWFILES];
 
-void SignalHandler(int sig)
-{
-	_kernel_oserror *err;
-	if (error) abort();
-	error=TRUE;
-	err=_kernel_last_oserror();
-	if (err==NULL)
-		Msgs_Report(1,"Error.Fatal:","Unknown Error");
-	else Msgs_Report(1,"Error.Fatal:",err->errmess);
-	exit(EXIT_FAILURE);
-}
-
 void LoadDrawFile(char *filename)
 {
 	int height,width;
 	int size;
-	File_GetLength(filename,&size);
-	flex_alloc((flex_ptr)&(drawfiles[numberofdrawfiles].drawfile),size);
-	if (drawfiles[numberofdrawfiles].drawfile==NULL) Msgs_ReportFatal(1,"Error.NoMem:Not enough free memory");
-	File_LoadTo(filename,drawfiles[numberofdrawfiles].drawfile,NULL);
+	size=Desk_File_GetLength(filename);
+	drawfiles[numberofdrawfiles].drawfile=Desk_DeskMem_Malloc(size);
+	Desk_File_LoadTo(filename,drawfiles[numberofdrawfiles].drawfile,NULL);
 	drawfiles[numberofdrawfiles].size=size;
 	width=drawfiles[numberofdrawfiles].drawfile->bbox.max.x-drawfiles[numberofdrawfiles].drawfile->bbox.min.x;
 	height=drawfiles[numberofdrawfiles].drawfile->bbox.max.y-drawfiles[numberofdrawfiles].drawfile->bbox.min.y;
     drawfiles[numberofdrawfiles].xoffset=(PICTURESIZE-width)/2-drawfiles[numberofdrawfiles].drawfile->bbox.min.x;
     drawfiles[numberofdrawfiles].yoffset=(PICTURESIZE-height)/2-drawfiles[numberofdrawfiles].drawfile->bbox.min.y;
-	strcpy(drawfiles[numberofdrawfiles].name,Filing_FindLeafname(filename));
+	strcpy(drawfiles[numberofdrawfiles].name,Desk_Filing_FindLeafname(filename));
 	numberofdrawfiles++;
 }
 
-BOOL RedrawMainWin(event_pollblock *block, void *r)
+Desk_bool RedrawMainWin(Desk_event_pollblock *block, void *r)
 {
-	BOOL more;
+	Desk_bool more;
 	int ox,oy;
-	window_redrawblock *blk=(window_redrawblock*)block->data.bytes;
-	Wimp_RedrawWindow(blk,&more);
+	Desk_window_redrawblock *blk=(Desk_window_redrawblock*)block->data.bytes;
+	Desk_Wimp_RedrawWindow(blk,&more);
 	ox=blk->rect.min.x-blk->scroll.x;
 	oy=blk->rect.max.y-blk->scroll.y;
 	matrix.zero1=0;
@@ -149,17 +150,17 @@ BOOL RedrawMainWin(event_pollblock *block, void *r)
 	matrix.yoffset=(oy<<8)+PICTUREOFFSET_Y+drawfiles[currentdrawfile].yoffset;
 	while (more) {
 		DrawFile_Render(0,drawfiles[currentdrawfile].drawfile,drawfiles[currentdrawfile].size,(os_trfm*)&matrix,&blk->cliprect,0);
-		Wimp_GetRectangle(blk,&more);
+		Desk_Wimp_GetRectangle(blk,&more);
 	}
-	return TRUE;
+	return Desk_TRUE;
 }
 
-BOOL RedrawChooseWin(event_pollblock *block, void *r)
+Desk_bool RedrawChooseWin(Desk_event_pollblock *block, void *r)
 {
-	BOOL more;
+	Desk_bool more;
 	int ox,oy;
-	window_redrawblock *blk=(window_redrawblock*)block->data.bytes;
-	Wimp_RedrawWindow(blk,&more);
+	Desk_window_redrawblock *blk=(Desk_window_redrawblock*)block->data.bytes;
+	Desk_Wimp_RedrawWindow(blk,&more);
 	ox=blk->rect.min.x-blk->scroll.x;
 	oy=blk->rect.max.y-blk->scroll.y;
 	matrix.zero1=0;
@@ -173,166 +174,166 @@ BOOL RedrawChooseWin(event_pollblock *block, void *r)
 			matrix.yoffset=(oy<<8)+origins[i].y+drawfiles[i].yoffset/2;
 			DrawFile_Render(0,drawfiles[i].drawfile,drawfiles[i].size,(os_trfm*)&matrix,&blk->cliprect,0);
 		}
-		Wimp_GetRectangle(blk,&more);
+		Desk_Wimp_GetRectangle(blk,&more);
 	}
-	return TRUE;
+	return Desk_TRUE;
 }
 
 void RedrawQuestion(void)
 {
-	Icon_SetText(mainwin,icon_QUESTION,GetQuestion());
-	Icon_SetText(mainwin,icon_YES,GetLeftText());
-	Icon_SetText(mainwin,icon_NO,GetRightText());
-	if (RootNode()) Icon_Shade(mainwin,icon_BACK); else Icon_Unshade(mainwin,icon_BACK);
+	Desk_Icon_SetText(mainwin,icon_QUESTION,GetQuestion());
+	Desk_Icon_SetText(mainwin,icon_YES,GetLeftText());
+	Desk_Icon_SetText(mainwin,icon_NO,GetRightText());
+	if (RootNode()) Desk_Icon_Shade(mainwin,icon_BACK); else Desk_Icon_Unshade(mainwin,icon_BACK);
 }
 
-BOOL CloseDialog(event_pollblock *block,void *r)
+Desk_bool CloseDialog(Desk_event_pollblock *block,void *r)
 {
 	if (block->data.mouse.button.data.select) {
-		Dialog_Hide(report);
-		Pointer_Unrestrict();
-		if (mainwinopen) Icon_SetCaret(mainwin,-1); else Icon_SetCaret(choosewin,-1);
-		return TRUE;
+		Desk_Pointer_Unrestrict();
+		if (mainwinopen) Desk_Icon_SetCaret(mainwin,-1); /*else Desk_Icon_SetCaret(choosewin,-1);*/
+		Desk_Window_Hide(report);
+		return Desk_TRUE;
 	}
-	return FALSE;
+	return Desk_FALSE;
 }
 
-BOOL ChooseClick(event_pollblock *block,void *r)
+Desk_bool ChooseClick(Desk_event_pollblock *block,void *r)
 {
 	int i;
-	if (block->data.mouse.button.data.menu==TRUE) return FALSE;
+	if (block->data.mouse.button.data.menu==Desk_TRUE) return Desk_FALSE;
 	for (i=0;i<numberofdrawfiles;i++) {
 		if (origins[i].icon==block->data.mouse.icon) break;
 	}
-	if (i>=numberofdrawfiles) return FALSE;
+	if (i>=numberofdrawfiles) return Desk_FALSE;
 	currentdrawfile=i;
-	Window_Show(mainwin,open_CENTERED);
-	mainwinopen=TRUE;
-	Icon_SetText(mainwin,icon_BACK,goback);
-	restart=FALSE;
-	Window_Hide(choosewin);
+	Desk_Window_Show(mainwin,Desk_open_CENTERED);
+	mainwinopen=Desk_TRUE;
+	Desk_Icon_SetText(mainwin,icon_BACK,goback);
+	restart=Desk_FALSE;
+	Desk_Window_Hide(choosewin);
 	MoveToRoot();
 	RedrawQuestion();
 	if (LeafNode()) {
-		Icon_SetShade(mainwin,icon_YES,TRUE);
-		Icon_SetShade(mainwin,icon_NO,TRUE);
+		Desk_Icon_SetShade(mainwin,icon_YES,Desk_TRUE);
+		Desk_Icon_SetShade(mainwin,icon_NO,Desk_TRUE);
 	} else {
-		Icon_SetShade(mainwin,icon_YES,FALSE);
-		Icon_SetShade(mainwin,icon_NO,FALSE);
+		Desk_Icon_SetShade(mainwin,icon_YES,Desk_FALSE);
+		Desk_Icon_SetShade(mainwin,icon_NO,Desk_FALSE);
 	}
-	Icon_SetCaret(mainwin,-1);
-	return TRUE;
+	Desk_Icon_SetCaret(mainwin,-1);
+	return Desk_TRUE;
 }
 
-BOOL IconBarClick(event_pollblock *block, void *r)
+Desk_bool IconBarClick(Desk_event_pollblock *block, void *r)
 {
 	if (block->data.mouse.button.data.select==1) {
 		if (mainwinopen) {
-			Window_BringToFront(mainwin);
-			Icon_SetCaret(mainwin,-1);
+			Desk_Window_BringToFront(mainwin);
+			Desk_Icon_SetCaret(mainwin,-1);
 		} else {
-			Window_Show(choosewin,open_WHEREVER); /*So the window is centered properly (as it might have just been resized)*/
-			Window_Show(choosewin,open_CENTERED);
+			Desk_Window_Show(choosewin,Desk_open_WHEREVER); /*So the window is centered properly (as it might have just been resized)*/
+			Desk_Window_Show(choosewin,Desk_open_CENTERED);
 #if REPORT
-			Report(Msgs_TempLookup("Report.Choose"));
-			Pointer_RestrictToWindow(Dialog_WindowHandle(report));
+			Report(AJWLib_Msgs_TempLookup("Report.Choose"));
+			Desk_Pointer_RestrictToWindow(report);
 #else
-			Icon_SetCaret(choosewin,-1);
+			Desk_Icon_SetCaret(choosewin,-1);
 #endif
 		}
-		return TRUE;
+		return Desk_TRUE;
  	}
- 	return FALSE;
+ 	return Desk_FALSE;
 }
 
-BOOL CloseMainWin(event_pollblock *block, void *r)
+Desk_bool CloseMainWin(Desk_event_pollblock *block, void *r)
 {
-	Window_Hide(mainwin);
-	mainwinopen=FALSE;
-	return TRUE;
+	Desk_Window_Hide(mainwin);
+	mainwinopen=Desk_FALSE;
+	return Desk_TRUE;
 }
 
-BOOL ReportKeyHandler(event_pollblock *block, void *r)
+Desk_bool ReportKeyHandler(Desk_event_pollblock *block, void *r)
 {
-	if (block->data.key.code==keycode_RETURN) {
-		Icon_Select(block->data.key.caret.window,icon_REPORT_OK);
-		Dialog_Hide(report);
-		Pointer_Unrestrict();
-		if (mainwinopen) Icon_SetCaret(mainwin,-1); else Icon_SetCaret(choosewin,-1);
-		Icon_Deselect(block->data.key.caret.window,icon_REPORT_OK);
-		return TRUE;
+	if (block->data.key.code==Desk_keycode_RETURN) {
+		Desk_Icon_Select(block->data.key.caret.window,icon_REPORT_OK);
+		Desk_Window_Hide(report);
+		Desk_Pointer_Unrestrict();
+		if (mainwinopen) Desk_Icon_SetCaret(mainwin,-1); else Desk_Icon_SetCaret(choosewin,-1);
+		Desk_Icon_Deselect(block->data.key.caret.window,icon_REPORT_OK);
+		return Desk_TRUE;
 	}
-	return FALSE;
+	return Desk_FALSE;
 }
 
 void Report(char *text)
 {
-	Icon_SetText(Dialog_WindowHandle(report),icon_REPORT_TEXT,text);
-	Dialog_Show(report);
-	Icon_SetCaret(Dialog_WindowHandle(report),-1);
-	Beep();
+	Desk_Icon_SetText(report,icon_REPORT_TEXT,text);
+	AJWLib_Window_OpenTransient(report);
+	Desk_Icon_SetCaret(report,-1);
+	Desk_Sound_SysBeep();
 }
 
 void CheckLeaf(void)
 {
 	if (LeafNode()) {
-		Icon_SetShade(mainwin,icon_YES,TRUE);
-		Icon_SetShade(mainwin,icon_NO,TRUE);
-		if (stricmp(GetFilename(),drawfiles[currentdrawfile].name)==0) {
+		Desk_Icon_SetShade(mainwin,icon_YES,Desk_TRUE);
+		Desk_Icon_SetShade(mainwin,icon_NO,Desk_TRUE);
+		if (Desk_stricmp(GetFilename(),drawfiles[currentdrawfile].name)==0) {
 			Report(GetQuestion());
-			restart=TRUE;
-			Icon_SetText(mainwin,icon_BACK,goagain);
+			restart=Desk_TRUE;
+			Desk_Icon_SetText(mainwin,icon_BACK,goagain);
 		} else {
 			char buffer[256];
-			Msgs_Lookup("Wrong.Shape:You have made a mistake",buffer,256);
+			Desk_Msgs_Lookup("Wrong.Shape:You have made a mistake",buffer,256);
 			Report(buffer);
-			Icon_SetText(mainwin,icon_QUESTION,buffer);
+			Desk_Icon_SetText(mainwin,icon_QUESTION,buffer);
 		}
 	} else {
-		Icon_SetShade(mainwin,icon_YES,FALSE);
-		Icon_SetShade(mainwin,icon_NO,FALSE);
+		Desk_Icon_SetShade(mainwin,icon_YES,Desk_FALSE);
+		Desk_Icon_SetShade(mainwin,icon_NO,Desk_FALSE);
 	}
 }
 
-BOOL YesClick(event_pollblock *block,void *r)
+Desk_bool YesClick(Desk_event_pollblock *block,void *r)
 {
 	MoveLeft();
 	RedrawQuestion();
 	CheckLeaf();
-	return TRUE;
+	return Desk_TRUE;
 }
 
-BOOL NoClick(event_pollblock *block,void *r)
+Desk_bool NoClick(Desk_event_pollblock *block,void *r)
 {
 	MoveRight();
 	RedrawQuestion();
 	CheckLeaf();
-	return TRUE;
+	return Desk_TRUE;
 }
 
-BOOL BackClick(event_pollblock *block,void *r)
+Desk_bool BackClick(Desk_event_pollblock *block,void *r)
 {
 	if (restart) {
 		CloseMainWin(NULL,NULL);
-		Window_Show(choosewin,open_CENTERED);
+		Desk_Window_Show(choosewin,Desk_open_CENTERED);
 #if REPORT
-		Report(Msgs_TempLookup("Report.Choose"));
-		Pointer_RestrictToWindow(Dialog_WindowHandle(report));
+		Report(AJWLib_Msgs_TempLookup("Report.Choose"));
+		Desk_Pointer_RestrictToWindow(report);
 #else
-		Icon_SetCaret(choosewin,-1);
+		Desk_Icon_SetCaret(choosewin,-1);
 #endif
 	} else {
 		MoveBack();
 		RedrawQuestion();
-		Icon_SetShade(mainwin,icon_YES,FALSE);
-		Icon_SetShade(mainwin,icon_NO,FALSE);
+		Desk_Icon_SetShade(mainwin,icon_YES,Desk_FALSE);
+		Desk_Icon_SetShade(mainwin,icon_NO,Desk_FALSE);
 	}
-	return TRUE;
+	return Desk_TRUE;
 }
 
 void IconBarMenuClick(int item, void *r)
 {
-	if (item==menuitem_QUIT) Event_CloseDown();
+	if (item==menuitem_QUIT) Desk_Event_CloseDown();
 }
 
 void LoadDrawFiles(void)
@@ -340,11 +341,11 @@ void LoadDrawFiles(void)
 	int offset=0,number=1,x,y,i;
 	int currentx,currenty;
 	char buffer[256+LENGTHOFPICTURESDIR+1]=PICTURESDIR".";
-	Filing_ReadDirNames(PICTURESDIR,buffer+LENGTHOFPICTURESDIR+1,&number,&offset,256,NULL);
+	Desk_Filing_ReadDirNames(PICTURESDIR,buffer+LENGTHOFPICTURESDIR+1,&number,&offset,256,NULL);
 	while (offset!=-1) {
 		LoadDrawFile(buffer);
 		number=1;
-		Filing_ReadDirNames(PICTURESDIR,buffer+LENGTHOFPICTURESDIR+1,&number,&offset,256,NULL);
+		Desk_Filing_ReadDirNames(PICTURESDIR,buffer+LENGTHOFPICTURESDIR+1,&number,&offset,256,NULL);
 	}
 	switch (numberofdrawfiles) {
 		case 1:
@@ -372,7 +373,7 @@ void LoadDrawFiles(void)
 			x=5;
 			break;
 		default:
-			Msgs_ReportFatal(1,"Error.TooMany:Too many pictures",MAX_DRAWFILES);
+			Desk_Msgs_ReportFatal(1,"Error.TooMany:Too many pictures",MAX_DRAWFILES);
 	}
 	switch (numberofdrawfiles) {
 		case 1:
@@ -397,9 +398,9 @@ void LoadDrawFiles(void)
 			y=3;
 			break;
 		default:
-			Msgs_ReportFatal(1,"Error.ToManyPics:Too many pictures",MAX_DRAWFILES);
+			Desk_Msgs_ReportFatal(1,"Error.ToManyPics:Too many pictures",MAX_DRAWFILES);
 	}
-	Window_SetExtent(choosewin,0,-216*y-16,216*x+16,0);
+	Desk_Window_SetExtent(choosewin,0,-216*y-16,216*x+16,0);
 	currentx=0;
 	currenty=1;
 	for (i=0;i<numberofdrawfiles;i++) {
@@ -415,56 +416,51 @@ void LoadDrawFiles(void)
 
 int main(void)
 {
-	signal(SIGINT,SignalHandler);
-	signal(SIGFPE,SignalHandler);
-	signal(SIGILL,SignalHandler);
-	signal(SIGSEGV,SignalHandler);
-	signal(SIGSTAK,SignalHandler);
-	signal(SIGOSERROR,SignalHandler);
-	Resource_Initialise(RESOURCEDIR);
-	Msgs_LoadFile("Messages");
-	Event_Initialise(Msgs_TempLookup("Task.Name"));
-	EventMsg_Initialise();
-	Screen_CacheModeInfo();
-	EventMsg_Claim(message_MODECHANGE,event_ANY,Handler_ModeChange,NULL);
-	Event_Claim(event_CLOSE,event_ANY,event_ANY,Handler_CloseWindow,NULL);
-	Event_Claim(event_OPEN,event_ANY,event_ANY,Handler_OpenWindow,NULL);
-	Event_Claim(event_REDRAW,event_ANY,event_ANY,Handler_HatchRedraw,NULL);
-	Event_Claim(event_KEY,event_ANY,event_ANY,Handler_KeyPress,NULL);
-	Icon_BarIcon(Msgs_TempLookup("Task.Icon:"),iconbar_RIGHT);
-	Template_Initialise();
-	Template_LoadFile("Templates");
-	info=Window_CreateInfoWindowFromMsgs("Task.Name:","Task.Purpose:","©Alex Waugh 1998",VERSION);
-	mainwin=Window_Create("Main",template_TITLEMIN);
-	Msgs_Lookup("MainWin.Back:",goback,256);
-	Msgs_Lookup("MainWin.GoAgain:",goagain,256);
-	Msgs_SetTitle(mainwin,"MainWin.Title:");
-	choosewin=Window_Create("Choose",template_TITLEMIN);
-	Msgs_SetTitle(choosewin,"Choose.Title:?");
-	report=Dialog_Create("Report",template_TITLEMIN);
-	Msgs_SetText(Dialog_WindowHandle(report),icon_REPORT_OK,"Report.Ok:?");
-	Msgs_SetTitle(Dialog_WindowHandle(report),"Report.Title:?");
-	Event_Claim(event_CLICK,Dialog_WindowHandle(report),icon_REPORT_OK,CloseDialog,NULL);
-	Event_Claim(event_KEY,Dialog_WindowHandle(report),event_ANY,ReportKeyHandler,NULL);
-	iconbarmenu=Menu_CreateFromMsgs("Task.Name:","Menu.IconBar:",IconBarMenuClick,NULL);
-	Menu_AddSubMenu(iconbarmenu,menuitem_INFO,(menu_ptr)info);
-	Menu_Attach(window_ICONBAR,event_ANY,iconbarmenu,button_MENU);
-	Event_Claim(event_CLICK,window_ICONBAR,event_ANY,IconBarClick,NULL);
-	Event_Claim(event_CLICK,mainwin,icon_YES,YesClick,NULL);
-	Event_Claim(event_CLICK,mainwin,icon_NO,NoClick,NULL);
-	Event_Claim(event_CLICK,mainwin,icon_BACK,BackClick,NULL);
-	Event_Claim(event_CLICK,choosewin,event_ANY,ChooseClick,NULL);
-	Event_Claim(event_CLOSE,mainwin,event_ANY,CloseMainWin,NULL);
-	Event_Claim(event_REDRAW,mainwin,event_ANY,RedrawMainWin,NULL);
-	Event_Claim(event_REDRAW,choosewin,event_ANY,RedrawChooseWin,NULL);
-	flex_init("ShapeSort",NULL);
+	Desk_Error2_HandleAllSignals();
+	Desk_Error2_SetHandler(AJWLib_Error2_ReportFatal);
+	Desk_Resource_Initialise(RESOURCEDIR);
+	Desk_Msgs_LoadFile("Messages");
+	Desk_Event_Initialise(AJWLib_Msgs_TempLookup("Task.Name"));
+	Desk_EventMsg_Initialise();
+	Desk_Screen_CacheModeInfo();
+	Desk_EventMsg_Claim(Desk_message_MODECHANGE,Desk_event_ANY,Desk_Handler_ModeChange,NULL);
+	Desk_Event_Claim(Desk_event_CLOSE,Desk_event_ANY,Desk_event_ANY,Desk_Handler_CloseWindow,NULL);
+	Desk_Event_Claim(Desk_event_OPEN,Desk_event_ANY,Desk_event_ANY,Desk_Handler_OpenWindow,NULL);
+	Desk_Event_Claim(Desk_event_REDRAW,Desk_event_ANY,Desk_event_ANY,Desk_Handler_HatchRedraw,NULL);
+	Desk_Event_Claim(Desk_event_KEY,Desk_event_ANY,Desk_event_ANY,Desk_Handler_Key,NULL);
+	Desk_Icon_BarIcon(AJWLib_Msgs_TempLookup("Task.Icon:"),Desk_iconbar_RIGHT);
+	Desk_Template_Initialise();
+	Desk_Template_LoadFile("Templates");
+	info=AJWLib_Window_CreateInfoWindowFromMsgs("Task.Name:","Task.Purpose:","© Alex Waugh 1998",VERSION);
+	mainwin=Desk_Window_Create("Main",Desk_template_TITLEMIN);
+	Desk_Msgs_Lookup("MainWin.Back:",goback,256);
+	Desk_Msgs_Lookup("MainWin.GoAgain:",goagain,256);
+	AJWLib_Msgs_SetTitle(mainwin,"MainWin.Title:");
+	choosewin=Desk_Window_Create("Choose",Desk_template_TITLEMIN);
+	AJWLib_Msgs_SetTitle(choosewin,"Choose.Title:?");
+	report=Desk_Window_Create("Report",Desk_template_TITLEMIN);
+	AJWLib_Msgs_SetText(report,icon_REPORT_OK,"Report.Ok:?");
+	AJWLib_Msgs_SetTitle(report,"Report.Title:?");
+	Desk_Event_Claim(Desk_event_CLICK,report,icon_REPORT_OK,CloseDialog,NULL);
+	Desk_Event_Claim(Desk_event_KEY,report,Desk_event_ANY,ReportKeyHandler,NULL);
+	iconbarmenu=AJWLib_Menu_CreateFromMsgs("Task.Name:","Menu.IconBar:",IconBarMenuClick,NULL);
+	Desk_Menu_AddSubMenu(iconbarmenu,menuitem_INFO,(Desk_menu_ptr)info);
+	AJWLib_Menu_Attach(Desk_window_ICONBAR,Desk_event_ANY,iconbarmenu,Desk_button_MENU);
+	Desk_Event_Claim(Desk_event_CLICK,Desk_window_ICONBAR,Desk_event_ANY,IconBarClick,NULL);
+	Desk_Event_Claim(Desk_event_CLICK,mainwin,icon_YES,YesClick,NULL);
+	Desk_Event_Claim(Desk_event_CLICK,mainwin,icon_NO,NoClick,NULL);
+	Desk_Event_Claim(Desk_event_CLICK,mainwin,icon_BACK,BackClick,NULL);
+	Desk_Event_Claim(Desk_event_CLICK,choosewin,Desk_event_ANY,ChooseClick,NULL);
+	Desk_Event_Claim(Desk_event_CLOSE,mainwin,Desk_event_ANY,CloseMainWin,NULL);
+	Desk_Event_Claim(Desk_event_REDRAW,mainwin,Desk_event_ANY,RedrawMainWin,NULL);
+	Desk_Event_Claim(Desk_event_REDRAW,choosewin,Desk_event_ANY,RedrawChooseWin,NULL);
 	LoadDrawFiles();
 	LoadFile(TREEDESCRIPTIONFILE);
 #if REPORT
-	Report(Msgs_TempLookup("Report.Init"));
-	Pointer_RestrictToWindow(Dialog_WindowHandle(report));
+	Report(AJWLib_Msgs_TempLookup("Report.Init"));
+	Desk_Pointer_RestrictToWindow(report);
 #endif
-	while (TRUE) Event_Poll();
+	while (Desk_TRUE) Desk_Event_Poll();
 	return 0;
 }
 
