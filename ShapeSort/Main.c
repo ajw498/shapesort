@@ -18,33 +18,34 @@
 
 */
 
-#include "Desk.Window.h"
-#include "Desk.Error.h"
-#include "Desk.Event.h"
-#include "Desk.EventMsg.h"
-#include "Desk.Msgs.h"
-#include "Desk.Handler.h"
-#include "Desk.Icon.h"
-#include "Desk.Menu.h"
-#include "Desk.DeskMem.h"
-#include "Desk.Menu2.h"
-#include "Desk.Resource.h"
-#include "Desk.Screen.h"
-#include "Desk.Template.h"
-#include "Desk.File.h"
-#include "Desk.Filing.h"
-#include "Desk.Sprite.h"
-#include "Desk.GFX.h"
-#include "Desk.Str.h"
-#include "Desk.Sound.h"
-#include "Desk.KeyCodes.h"
-#include "Desk.Pointer.h"
+#include "Desk/Window.h"
+#include "Desk/Error.h"
+#include "Desk/Event.h"
+#include "Desk/EventMsg.h"
+#include "Desk/Msgs.h"
+#include "Desk/Handler.h"
+#include "Desk/Icon.h"
+#include "Desk/Menu.h"
+#include "Desk/DeskMem.h"
+#include "Desk/Menu2.h"
+#include "Desk/Resource.h"
+#include "Desk/Screen.h"
+#include "Desk/Template.h"
+#include "Desk/File.h"
+#include "Desk/Filing.h"
+#include "Desk/Sprite.h"
+#include "Desk/GFX.h"
+#include "Desk/Str.h"
+#include "Desk/Sound.h"
+#include "Desk/KeyCodes.h"
+#include "Desk/Pointer.h"
 
-#include "AJWLib.Window.h"
-#include "AJWLib.Error2.h"
-#include "AJWLib.Menu.h"
-#include "AJWLib.Msgs.h"
-#include "AJWLib.DrawFile.h"
+#include "AJWLib/Window.h"
+#include "AJWLib/Error2.h"
+#include "AJWLib/Menu.h"
+#include "AJWLib/Msgs.h"
+#include "AJWLib/DrawFile.h"
+
 #include "Questions.h"
 
 #include <stdlib.h>
@@ -71,7 +72,7 @@
 #endif
 
 
-#define VERSION "1.01 (13-Feb-00)"
+#define VERSION "1.02 (7-Dec-02)"
 #define RESOURCEDIR "Shape"TYPE
 #define PICTURESDIR "<Shape"TYPE"$Dir>.Pictures" /*Dont change without changing LENGTHOFPICTURESDIR*/
 #define LENGTHOFPICTURESDIR 22

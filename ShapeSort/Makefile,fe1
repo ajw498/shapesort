@@ -1,32 +1,30 @@
-HEADERS	=	Questions.h
+# Makefile for ShapeSort
 
-LIBS	=	\
-		L:Stubs.o.asstubs\
-		L:Desk.o.Desk\
-		L:AJWLib.o.AJWLib
+LIBS = Desk:o.Desk AJWLib:o.AJWLib
 
 
-OBJECTS	=	!RunImage.o\
-		Questions.o
+OBJECTS = Main.o Questions.o
 
 
+CFLAGS = -mthrowback -mlibscl -Wall -O3 -IDesk: -IAJWLib:
 
-CCFLAGS		=	$(CCEXTRA) -mthrowback -mstubs -Wall -O3 -IL:
+CC = gcc
 
-CC		=	gcc -c $(CCFLAGS)
+LINK = gcc
 
-LINK		=	gcc $(CCFLAGS)
+VERSION = 3D
 
-VERSION		=	3D
 
+all:	../!Shape$(VERSION)/!RunImage ../!Shape$(VERSION)/Messages ../!Shape$(VERSION)/Templates \
+        ../!Shape$(VERSION)/!Sprites ../!Shape$(VERSION)/!Sprites22 ../!Shape$(VERSION)/!Boot \
+        ../!Shape$(VERSION)/!Run ../!Shape$(VERSION)/TreeData ../!Shape$(VERSION)/Pictures \
+        ../!Shape$(VERSION)/!Help
 
 .c.o:
-	$(CC) -DBUILD$(VERSION) $< -o $@
+	$(CC) -c $(CFLAGS) -DBUILD$(VERSION) $< -o $@
 
-all:	../!Shape$(VERSION)/!RunImage ../!Shape$(VERSION)/Messages ../!Shape$(VERSION)/Templates ../!Shape$(VERSION)/!Sprites ../!Shape$(VERSION)/!Sprites22 ../!Shape$(VERSION)/!Boot ../!Shape$(VERSION)/!Run ../!Shape$(VERSION)/TreeData ../!Shape$(VERSION)/Pictures ../!Shape$(VERSION)/!Help
-
-!RunImage:	$(OBJECTS) $(LIBS)
-	$(LINK) -o $@ $(OBJECTS) $(LIBS)
+!RunImage:	$(OBJECTS)
+	$(LINK) -o $@ $(CFLAGS) $(OBJECTS) $(LIBS)
 
 
 ../!Shape$(VERSION):
@@ -47,30 +45,30 @@ all:	../!Shape$(VERSION)/!RunImage ../!Shape$(VERSION)/Messages ../!Shape$(VERSI
 ../!Shape$(VERSION)/!Help:	!Help ../!Shape$(VERSION)
 	cp !Help $@
 
-../!Shape$(VERSION)/Messages:	Messages ../!Shape$(VERSION) 
+../!Shape$(VERSION)/Messages:	Messages ../!Shape$(VERSION)
 	sed s/XD/$(VERSION)/ Messages > $@
 
-../!Shape$(VERSION)/!Boot:	!Boot ../!Shape$(VERSION) 
+../!Shape$(VERSION)/!Boot:	!Boot ../!Shape$(VERSION)
 	sed s/XD/$(VERSION)/ !Boot > $@
 	filetype $@ Obey
 
-../!Shape$(VERSION)/!Run:	!Run ../!Shape$(VERSION) 
+../!Shape$(VERSION)/!Run:	!Run ../!Shape$(VERSION)
 	sed s/XD/$(VERSION)/ !Run > $@
 	filetype $@ Obey
 
-../!Shape$(VERSION)/TreeData:	TreeData$(VERSION) ../!Shape$(VERSION) 
+../!Shape$(VERSION)/TreeData:	TreeData$(VERSION) ../!Shape$(VERSION)
 	cp TreeData$(VERSION) $@
 
-../!Shape$(VERSION)/Pictures:	Pictures$(VERSION) ../!Shape$(VERSION) 
-	cp Pictures$(VERSION) $@
-	rm $@/CVS
+../!Shape$(VERSION)/Pictures:	Pictures$(VERSION) ../!Shape$(VERSION)
+	cp -r Pictures$(VERSION) $@
+	rm -rf $@/CVS
 	touch $@
 
 clean:
-	rm !RunImage
-	rm *.o
+	-rm -f !RunImage
+	-rm -f $(OBJECTS)
 
-sparkling:	clean
-	rm ../!Shape2D
-	rm ../!Shape3D
+distclean:	clean
+	-rm -rf ../!Shape2D
+	-rm -rf ../!Shape3D
 

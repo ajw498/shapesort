@@ -1,7 +1,7 @@
 Dir <Obey$Dir>
 remove ^.shapesortsource/zip
 remove ^.shapesort/zip
-make sparkling
+make distclean
 make VERSION=2D
 make clean
 make VERSION=3D
