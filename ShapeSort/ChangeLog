@@ -1,0 +1,8 @@
+
+v1.01 13-Feb-00
+Updated to use Desk
+Removed use of Dialog functions as they claimed null polls unnecessarily
+Released under the GNU GPL
+
+v1.00 9-Jun-98
+Initial version
