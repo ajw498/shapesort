@@ -1,0 +1,12 @@
+Dir <Obey$Dir>
+remove ^.shapesortsource/zip
+remove ^.shapesort/zip
+make sparkling
+make VERSION=2D
+make clean
+make VERSION=3D
+make clean
+cp !Help ^.ReadMe
+zip -r -9 ^.shapesortsource/zip * -x *CVS* !RunImage CreateZips
+Dir ^
+zip -r -9 shapesort/zip !Shape2D !Shape3D ReadMe Copying
