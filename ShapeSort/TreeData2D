@@ -1,0 +1,127 @@
+Node0.Question:Does the shape have corners?
+Node0.LeftNode:Node1
+Node0.RightNode:Node2
+
+Node1.Question:Does the shape have 5 sides?
+Node1.LeftNode:Node4
+Node1.RightNode:Node3
+
+Node2.Question:Your shape is a circle
+Node2.Filename:Circle
+Node2.LeftText:X
+Node2.RightText:X
+Node2.LeftNode:None
+Node2.RightNode:None
+
+Node3.Question:Does the shape have more than 5 sides?
+Node3.LeftNode:Node5
+Node3.RightNode:Node6
+
+Node4.Question:Your shape is a pentagon
+Node4.Filename:Pentagon
+Node4.LeftText:X
+Node4.RightText:X
+Node4.LeftNode:None
+Node4.RightNode:None
+
+Node5.Question:Does the shape have 8 sides?
+Node5.LeftNode:Node8
+Node5.RightNode:Node7
+
+Node6.Question:Does the shape have 3 sides?
+Node6.LeftNode:Node9
+Node6.RightNode:Node10
+
+Node7.Question:Your shape is a hexagon
+Node7.Filename:Hexagon
+Node7.LeftText:X
+Node7.RightText:X
+Node7.LeftNode:None
+Node7.RightNode:None
+
+Node8.Question:Your shape is an octagon
+Node8.Filename:Octagon
+Node8.LeftText:X
+Node8.RightText:X
+Node8.LeftNode:None
+Node8.RightNode:None
+
+Node9.Question:Are all the sides an equal length?
+Node9.LeftNode:Node11
+Node9.RightNode:Node12
+
+Node10.Question:Are all the inside angles 90 degrees?
+Node10.LeftNode:Node15
+Node10.RightNode:Node16
+
+Node11.Question:Your shape is an equilateral triangle
+Node11.Filename:Equilaterl
+Node11.LeftText:X
+Node11.RightText:X
+Node11.LeftNode:None
+Node11.RightNode:None
+
+Node12.Question:Are two of the inside angles the same?
+Node12.LeftNode:Node13
+Node12.RightNode:Node14
+
+Node13.Question:Your shape is an isosceles triangle
+Node13.Filename:Isosceles
+Node13.LeftText:X
+Node13.RightText:X
+Node13.LeftNode:None
+Node13.RightNode:None
+
+Node14.Question:Your shape is an right angled triangle
+Node14.Filename:RightAngle
+Node14.LeftText:X
+Node14.RightText:X
+Node14.LeftNode:None
+Node14.RightNode:None
+
+Node15.Question:Are all the sides the same length?
+Node15.LeftNode:Node17
+Node15.RightNode:Node18
+
+Node16.Question:Are all sides equal length?
+Node16.LeftNode:Node19
+Node16.RightNode:Node20
+
+Node17.Question:Your shape is a square
+Node17.Filename:Square
+Node17.LeftText:X
+Node17.RightText:X
+Node17.LeftNode:None
+Node17.RightNode:None
+
+Node18.Question:Your shape is a rectangle
+Node18.Filename:Rectangle
+Node18.LeftText:X
+Node18.RightText:X
+Node18.LeftNode:None
+Node18.RightNode:None
+
+Node19.Question:Your shape is a rhombus
+Node19.Filename:Rhombus
+Node19.LeftText:X
+Node19.RightText:X
+Node19.LeftNode:None
+Node19.RightNode:None
+
+Node20.Question:Are two of the sides parallel?
+Node20.LeftNode:Node21
+Node20.RightNode:Node22
+
+Node21.Question:Your shape is a parallelogram
+Node21.Filename:Parallelgm
+Node21.LeftText:X
+Node21.RightText:X
+Node21.LeftNode:None
+Node21.RightNode:None
+
+Node22.Question:Your shape is a quadrilateral
+Node22.Filename:Quadrilatl
+Node22.LeftText:X
+Node22.RightText:X
+Node22.LeftNode:None
+Node22.RightNode:None

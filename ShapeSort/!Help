@@ -1,0 +1,14 @@
+                          ShapeSort ©Alex Waugh 1998
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~
+Version 1.00 (7-Jun-98)
+
+ShapeSort is a program that tries to identify which shape you have choosen, by asking yes/no questions for you to answer, until it has deduced the shape.  It's operation should be fairly self-explanatary.
+
+ShapeSort is not supplied with any warranty of any kind, and the author cannot be held responsible for any damage caused by the program.
+
+ShapeSort may be freely distributed, provided no profit is made and this file is still included in the distribution, although I retain the copyright.
+You may also modify the program for you own needs if you so wish, but you should still include this file, and state what changes you have made to the program.
+
+I should also thank the authors of the DeskLib C library, without which this program would have taken far longer to write.
+
+Alex Waugh, June 1998

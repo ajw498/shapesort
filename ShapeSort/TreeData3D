@@ -1,0 +1,95 @@
+Node0.Question:Does the shape have any circular faces?
+Node0.LeftNode:Node1
+Node0.RightNode:Node6
+
+Node1.Question:Does the shape have two circular faces?
+Node1.LeftNode:Node2
+Node1.RightNode:Node3
+
+Node2.Question:Your shape is a cylinder
+Node2.Filename:Cylinder
+Node2.LeftText:X
+Node2.RightText:X
+Node2.LeftNode:None
+Node2.RightNode:None
+
+Node3.Question:Does the shape have a pointed tip?
+Node3.LeftNode:Node4
+Node3.RightNode:Node5
+
+Node4.Question:Your shape is a cone
+Node4.Filename:Cone
+Node4.LeftText:X
+Node4.RightText:X
+Node4.LeftNode:None
+Node4.RightNode:None
+
+Node5.Question:Your shape is a hemisphere
+Node5.Filename:Hemisphere
+Node5.LeftText:X
+Node5.RightText:X
+Node5.LeftNode:None
+Node5.RightNode:None
+
+Node6.Question:Does the shape have 5 faces?
+Node6.LeftNode:Node7
+Node6.RightNode:Node10
+
+Node7.Question:Does the shape have 6 vertices?
+Node7.LeftNode:Node8
+Node7.RightNode:Node9
+
+Node8.Question:Your shape is a triangular prism
+Node8.Filename:TriPrism
+Node8.LeftText:X
+Node8.RightText:X
+Node8.LeftNode:None
+Node8.RightNode:None
+
+Node9.Question:Your shape is a square based pyramid
+Node9.Filename:SqrPyramid
+Node9.LeftText:X
+Node9.RightText:X
+Node9.LeftNode:None
+Node9.RightNode:None
+
+Node10.Question:Does the shape have 8 verticies?
+Node10.LeftNode:Node11
+Node10.RightNode:Node14
+
+Node11.Question:Are all the faces square?
+Node11.LeftNode:Node12
+Node11.RightNode:Node13
+
+Node12.Question:Your shape is a cube
+Node12.Filename:Cube
+Node12.LeftText:X
+Node12.RightText:X
+Node12.LeftNode:None
+Node12.RightNode:None
+
+Node13.Question:Your shape is a cuboid
+Node13.Filename:Cuboid
+Node13.LeftText:X
+Node13.RightText:X
+Node13.LeftNode:None
+Node13.RightNode:None
+
+Node14.Question:Are all the faces triangles?
+Node14.LeftNode:Node15
+Node14.RightNode:Node16
+
+Node15.Question:Your shape is a triangular based pyramid
+Node15.Filename:TriPyramid
+Node15.LeftText:X
+Node15.RightText:X
+Node15.LeftNode:None
+Node15.RightNode:None
+
+Node16.Question:Your shape is a sphere
+Node16.Filename:Sphere
+Node16.LeftText:X
+Node16.RightText:X
+Node16.LeftNode:None
+Node16.RightNode:None
+

@@ -1,0 +1,13 @@
+#Project
+Making ShapeSort
+#Target
+Alex:C.ShapeSort.!Shape 2D.!RunImage
+#Files
+Alex:C.ShapeSort.!Shape 2D.c.!RunImage
+Alex:C.ShapeSort.!Shape 2D.o.Questions
+Alex:C.ShapeSort.!Shape 2D.o.Error
+#Libraries
+CLib:o.stubs
+AJWLib:o.ajwlib
+AJWLib:o.drawfile
+Desklib:o.Desklib
