@@ -15,6 +15,8 @@ CCFLAGS		=	$(CCEXTRA) -mthrowback -mstubs -IL: -IDeskLib:
 
 CC		=	gcc -c $(CCFLAGS)
 
+LINK		=	gcc $(CCFLAGS)
+
 VERSION		=	2D
 
 .c.o:
@@ -23,42 +25,42 @@ VERSION		=	2D
 all:	../!Shape$(VERSION)/!RunImage ../!Shape$(VERSION)/Messages ../!Shape$(VERSION)/Templates ../!Shape$(VERSION)/!Sprites ../!Shape$(VERSION)/!Sprites22 ../!Shape$(VERSION)/!Boot ../!Shape$(VERSION)/!Run ../!Shape$(VERSION)/TreeData ../!Shape$(VERSION)/Pictures ../!Shape$(VERSION)/!Help
 
 !RunImage:	$(OBJECTS) $(LIBS)
-	gcc -o $@ -D$(VERSION) $(OBJECTS) $(LIBS)
+	$(LINK) -o $@ -D$(VERSION) $(OBJECTS) $(LIBS)
 
 
 ../!Shape$(VERSION):
 	mkdir $@
 
-../!Shape$(VERSION)/!RunImage:	../!Shape$(VERSION) !RunImage
+../!Shape$(VERSION)/!RunImage:	!RunImage ../!Shape$(VERSION)
 	cp !RunImage $@
 
-../!Shape$(VERSION)/Templates:	../!Shape$(VERSION) Templates
+../!Shape$(VERSION)/Templates:	Templates ../!Shape$(VERSION)
 	cp Templates $@
 
-../!Shape$(VERSION)/!Sprites:	../!Shape$(VERSION) !Sprites
+../!Shape$(VERSION)/!Sprites:	!Sprites ../!Shape$(VERSION)
 	cp !Sprites $@
 
-../!Shape$(VERSION)/!Sprites22:	../!Shape$(VERSION) !Sprites22
+../!Shape$(VERSION)/!Sprites22:	!Sprites22 ../!Shape$(VERSION)
 	cp !Sprites22 $@
 
-../!Shape$(VERSION)/!Help:	../!Shape$(VERSION) !Help
+../!Shape$(VERSION)/!Help:	!Help ../!Shape$(VERSION)
 	cp !Help $@
 
-../!Shape$(VERSION)/Messages:	../!Shape$(VERSION) Messages
+../!Shape$(VERSION)/Messages:	Messages ../!Shape$(VERSION) 
 	sed s/XD/$(VERSION)/ Messages > $@
 
-../!Shape$(VERSION)/!Boot:	../!Shape$(VERSION) !Boot
+../!Shape$(VERSION)/!Boot:	!Boot ../!Shape$(VERSION) 
 	sed s/XD/$(VERSION)/ !Boot > $@
 	filetype $@ Obey
 
-../!Shape$(VERSION)/!Run:	../!Shape$(VERSION) !Run
+../!Shape$(VERSION)/!Run:	!Run ../!Shape$(VERSION) 
 	sed s/XD/$(VERSION)/ !Run > $@
 	filetype $@ Obey
 
-../!Shape$(VERSION)/TreeData:	../!Shape$(VERSION) TreeData$(VERSION)
+../!Shape$(VERSION)/TreeData:	TreeData$(VERSION) ../!Shape$(VERSION) 
 	cp TreeData$(VERSION) $@
 
-../!Shape$(VERSION)/Pictures:	../!Shape$(VERSION) Pictures$(VERSION)
+../!Shape$(VERSION)/Pictures:	Pictures$(VERSION) ../!Shape$(VERSION) 
 	cp Pictures$(VERSION) $@
 	rm $@/CVS
 	touch $@
